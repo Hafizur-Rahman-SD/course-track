@@ -1,0 +1,4 @@
+ job tracker pass Ko5PZsSZePpPWuu8 
+database pass course-track ph_dwW4nJ28UyFV
+
+npm start forrun server frontend 
