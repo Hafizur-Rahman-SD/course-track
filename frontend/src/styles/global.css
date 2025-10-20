@@ -82,16 +82,16 @@ body {
 }
 
 .course-card {
-  border-radius: 18px !important;
-  background: #fff;
-  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08) !important;
+  background: #ffffff;
+  border-radius: 18px;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .course-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
+
 
 .custom-dialog {
   border-radius: 16px !important;
