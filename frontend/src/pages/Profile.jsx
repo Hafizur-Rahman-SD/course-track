@@ -15,12 +15,14 @@ export default function Profile() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const getUser = async () => {
-      const { data, error } = await supabase.auth.getUser();
-      if (!error) setUser(data.user);
+    const checkSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (data?.session?.user) {
+        setUser(data.session.user);
+      }
       setLoading(false);
     };
-    getUser();
+    checkSession();
   }, []);
 
   if (loading)
@@ -32,50 +34,42 @@ export default function Profile() {
 
   if (!user)
     return (
-      <Typography align="center" mt={10}>
-        No user found. Please log in.
-      </Typography>
+      <>
+        <Navbar />
+        <Typography align="center" mt={10} variant="h6" color="error">
+          No user found 😞<br />
+          <span style={{ fontSize: "0.9rem", color: "#666" }}>
+            Please login again to see your profile.
+          </span>
+        </Typography>
+      </>
     );
 
   return (
     <>
       <Navbar />
-      <Card
-        sx={{
-          maxWidth: 480,
-          mx: "auto",
-          mt: 6,
-          p: 2,
-          boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-          borderRadius: "16px",
-        }}
-      >
+      <Card className="profile-card">
         <CardContent>
           <Stack alignItems="center" spacing={2}>
-            <Avatar
-              sx={{
-                width: 90,
-                height: 90,
-                bgcolor: "#1976d2",
-                fontSize: 32,
-                fontWeight: "bold",
-              }}
-            >
+            <Avatar className="profile-avatar">
               {user.email[0].toUpperCase()}
             </Avatar>
-            <Typography variant="h6" fontWeight={700}>
+            <Typography variant="h6" className="profile-email">
               {user.email}
             </Typography>
-            <Typography color="text.secondary" variant="body2">
+            <Typography className="profile-meta">
               ID: {user.id.slice(0, 10)}...
             </Typography>
-            <Typography color="text.secondary" variant="body2">
+            <Typography className="profile-meta">
               Joined:{" "}
-              {new Date(user.created_at).toLocaleDateString("en-GB", {
-                day: "2-digit",
-                month: "short",
-                year: "numeric",
-              })}
+              {new Date(user.created_at || Date.now()).toLocaleDateString(
+                "en-GB",
+                {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                }
+              )}
             </Typography>
           </Stack>
         </CardContent>

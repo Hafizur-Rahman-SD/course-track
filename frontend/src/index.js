@@ -6,6 +6,8 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile"; 
+import "./styles/global.css";
+
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

@@ -1,0 +1,75 @@
+/* 🌐 Global Styles - apply everywhere */
+body {
+  margin: 0;
+  font-family: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: #f7f9fc;
+  color: #1e1e1e;
+}
+
+/* 🔹 Navbar Style */
+.navbar {
+  background: linear-gradient(90deg, #1976d2 0%, #1565c0 100%);
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.navbar-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar-logo {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.nav-btn {
+  color: #fff !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  transition: background-color 0.3s;
+}
+
+.nav-btn:hover {
+  background-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+.logout-btn {
+  background-color: #fff !important;
+  color: #1565c0 !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+}
+
+.logout-btn:hover {
+  background-color: #e7e7e7 !important;
+}
+
+/* 🔹 Profile Card */
+.profile-card {
+  max-width: 480px;
+  margin: 3rem auto;
+  padding: 1.5rem;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
+}
+
+.profile-avatar {
+  width: 90px !important;
+  height: 90px !important;
+  background-color: #1976d2 !important;
+  font-size: 32px !important;
+  font-weight: bold !important;
+}
+
+.profile-email {
+  font-weight: 700 !important;
+}
+
+.profile-meta {
+  color: #666;
+  font-size: 0.9rem;
+}
