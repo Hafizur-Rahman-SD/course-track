@@ -1,12 +1,10 @@
 import * as React from "react";
-import Container from "@mui/material/Container";
-import Box from "@mui/material/Box";
-import { createTheme, ThemeProvider, CssBaseline } from "@mui/material";
+import { Container, Box, CssBaseline, createTheme, ThemeProvider } from "@mui/material";
 import Navbar from "./Navbar";
 
 const theme = createTheme({
-  shape: { borderRadius: 14 },
   typography: { fontFamily: ["Inter", "Roboto", "Helvetica", "Arial", "sans-serif"].join(",") },
+  shape: { borderRadius: 12 },
 });
 
 export default function AppLayout({ children }) {
