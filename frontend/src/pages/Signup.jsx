@@ -1,86 +1,81 @@
-import * as React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
+import { TextField, Button, Typography, Box, Stack } from "@mui/material";
 import { supabase } from "../lib/supabaseClient";
-import {
-  Card,
-  CardContent,
-  TextField,
-  Button,
-  Typography,
-  Stack,
-  Alert,
-  Snackbar,
-} from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import GoogleIcon from "@mui/icons-material/Google";
+import "../styles/Auth.css";
 
 export default function Signup() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [notice, setNotice] = useState("");
-  const [open, setOpen] = useState(false);
+  const [formData, setFormData] = useState({ name: "", email: "", password: "" });
   const navigate = useNavigate();
 
   async function handleSignup(e) {
     e.preventDefault();
     const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { emailRedirectTo: "http://localhost:3000/login" },
+      email: formData.email,
+      password: formData.password,
+      options: { data: { name: formData.name } },
     });
-
-    if (error) setNotice(error.message);
-    else {
-      setNotice("✅ Check your inbox to verify your email before logging in.");
-      setOpen(true);
-      setTimeout(() => navigate("/login"), 3000);
-    }
+    if (error) alert(error.message);
+    else alert("Signup successful! Please verify your email.");
   }
 
   async function handleGoogleLogin() {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo: "http://localhost:3000/dashboard" },
-    });
-    if (error) setNotice(error.message);
-    else {
-      setNotice("✅ Google Login initiated. Check your mail if required.");
-      setOpen(true);
-    }
+    await supabase.auth.signInWithOAuth({ provider: "google" });
   }
 
   return (
-    <Card sx={{ maxWidth: 400, mx: "auto", mt: 6, p: 2 }}>
-      <CardContent>
-        <Typography variant="h5" fontWeight={700} mb={2}>
-          Create your account
+    <Box className="auth-container">
+      <Box className="left-panel">
+        <Typography variant="h4" color="white" fontWeight={700}>
+          Welcome Back!
         </Typography>
-        {notice && <Alert severity={notice.startsWith("✅") ? "success" : "error"}>{notice}</Alert>}
-        <form onSubmit={handleSignup}>
-          <Stack spacing={2}>
-            <TextField label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-            <TextField label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-            <Button type="submit" variant="contained">Sign Up</Button>
-            <Button
-              onClick={handleGoogleLogin}
-              startIcon={<GoogleIcon />}
-              variant="outlined"
-            >
-              Sign up with Google
-            </Button>
-            <Typography variant="body2">
-              Already have an account? <Link to="/login">Login</Link>
-            </Typography>
-          </Stack>
-        </form>
+        <Typography color="white" sx={{ mt: 1, mb: 3 }}>
+          Please login with your personal info
+        </Typography>
+        <Button component={Link} to="/login" variant="outlined" color="inherit">
+          SIGN IN
+        </Button>
+      </Box>
 
-        <Snackbar
-          open={open}
-          autoHideDuration={4000}
-          onClose={() => setOpen(false)}
-          message={notice}
-        />
-      </CardContent>
-    </Card>
+      <Box className="right-panel">
+        <Typography variant="h5" fontWeight={700} sx={{ mb: 2 }}>
+          Sign Up
+        </Typography>
+
+        <Stack spacing={2} sx={{ width: "80%", maxWidth: "350px" }}>
+          <TextField
+            label="Name"
+            variant="outlined"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          />
+          <TextField
+            label="Email"
+            variant="outlined"
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          />
+          <TextField
+            label="Password"
+            type="password"
+            variant="outlined"
+            value={formData.password}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+          />
+          <Button variant="contained" onClick={handleSignup}>
+            SIGN UP
+          </Button>
+
+          <Button
+            variant="outlined"
+            startIcon={<GoogleIcon />}
+            onClick={handleGoogleLogin}
+          >
+            Continue with Google
+          </Button>
+        </Stack>
+      </Box>
+    </Box>
   );
 }
