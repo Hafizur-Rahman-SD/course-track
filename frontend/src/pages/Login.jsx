@@ -38,7 +38,7 @@ export default function Login() {
       {/* Top navbar (Home, About, Contact, Log In) */}
       <header className="auth-nav">
         <div className="brand">Course Tracking</div>
-        
+
       </header>
 
       <div className="auth-card">
@@ -64,7 +64,6 @@ export default function Login() {
               onChange={(e) => setForm({ ...form, password: e.target.value })}
               className="auth-input"
             />
-
             <div className="auth-util">
               <FormControlLabel
                 control={
