@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "../styles/Contact.css";
 import Navbar from "../components/Navbar";
+import { supabase } from "../lib/supabaseClient"; // ✅ এইটা যোগ করো
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -8,23 +9,45 @@ export default function Contact() {
     email: "",
     message: "",
   });
+  const [loading, setLoading] = useState(false);
+  const [sent, setSent] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert("Thank you for reaching out! We'll get back to you soon 😊");
-    setFormData({ name: "", email: "", message: "" });
+    setLoading(true);
+    setSent(false);
+
+    const { error } = await supabase.from("contact_messages").insert([
+      {
+        name: formData.name,
+        email: formData.email,
+        message: formData.message,
+      },
+    ]);
+
+    setLoading(false);
+
+    if (error) {
+      alert("❌ Message failed: " + error.message);
+    } else {
+      alert("✅ Message sent successfully!");
+      setFormData({ name: "", email: "", message: "" });
+      setSent(true);
+    }
   };
 
   return (
     <div className="contact-wrapper">
       <Navbar />
       <section className="contact-section">
-        <h1>Get in <span>Touch</span></h1>
+        <h1>
+          Get in <span>Touch</span>
+        </h1>
         <p>We’d love to hear from you! Fill out the form below 👇</p>
 
         <form onSubmit={handleSubmit} className="contact-form">
@@ -52,8 +75,12 @@ export default function Contact() {
             value={formData.message}
             onChange={handleChange}
           />
-          <button type="submit">Send Message</button>
+          <button type="submit" disabled={loading}>
+            {loading ? "Sending..." : "Send Message"}
+          </button>
         </form>
+
+        {sent && <p className="success-msg">✅ Thanks for your message!</p>}
 
         <div className="contact-info">
           <p>📧 support@coursetrack.com</p>
