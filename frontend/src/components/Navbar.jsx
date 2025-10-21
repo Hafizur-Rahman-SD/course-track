@@ -1,60 +1,52 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { AppBar, Toolbar, Typography, Button, Stack } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient";
 
 export default function Navbar() {
-  const navigate = useNavigate();
-  const [session, setSession] = useState(null);
+  const [user, setUser] = React.useState(null);
 
-  useEffect(() => {
-    const getSession = async () => {
+  React.useEffect(() => {
+    const getUser = async () => {
       const { data } = await supabase.auth.getSession();
-      setSession(data.session);
+      setUser(data?.session?.user || null);
     };
-    getSession();
-
-    // listen for login/logout
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-
-    return () => listener.subscription.unsubscribe();
+    getUser();
   }, []);
 
-  const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error("Logout failed:", error.message);
-    } else {
-      alert("Logged out successfully!");
-      navigate("/login");
-    }
-  };
+  async function handleLogout() {
+    await supabase.auth.signOut();
+    window.location.href = "/login";
+  }
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: "#673ab7" }}>
+    <AppBar
+      position="static"
+      sx={{
+        background: "#4f46e5",
+        boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+      }}
+    >
       <Toolbar>
+        {/* Logo / Title */}
         <Typography
           variant="h6"
           component={Link}
           to="/"
           sx={{
             flexGrow: 1,
-            color: "white",
             textDecoration: "none",
+            color: "white",
             fontWeight: 700,
           }}
         >
-          CourseTrack 🎓
+          CourseTrack
         </Typography>
 
+        {/* Navigation Buttons */}
         <Stack direction="row" spacing={2}>
           <Button color="inherit" component={Link} to="/">
             Home
-          </Button>
-          <Button color="inherit" component={Link} to="/dashboard">
-            Dashboard
           </Button>
           <Button color="inherit" component={Link} to="/about">
             About
@@ -63,18 +55,35 @@ export default function Navbar() {
             Contact
           </Button>
 
-          {/* 🔹 Condition: login থাকলে Logout, না থাকলে Login/Signup */}
-          {session ? (
-            <Button color="inherit" onClick={handleLogout}>
-              Logout
-            </Button>
+          {user ? (
+            <>
+              <Button color="inherit" component={Link} to="/profile">
+                Profile
+              </Button>
+              <Button
+                color="inherit"
+                onClick={handleLogout}
+                sx={{
+                  backgroundColor: "rgba(255,255,255,0.1)",
+                  borderRadius: "6px",
+                  "&:hover": { backgroundColor: "rgba(255,255,255,0.2)" },
+                }}
+              >
+                Logout
+              </Button>
+            </>
           ) : (
             <>
               <Button color="inherit" component={Link} to="/login">
                 Login
               </Button>
-              <Button color="inherit" component={Link} to="/signup">
-                Signup
+              <Button
+                color="secondary"
+                variant="contained"
+                component={Link}
+                to="/signup"
+              >
+                Sign Up
               </Button>
             </>
           )}

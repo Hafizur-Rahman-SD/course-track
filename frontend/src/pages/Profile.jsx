@@ -1,91 +1,138 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Card, CardContent, Stack, Avatar, Button } from "@mui/material";
 import { supabase } from "../lib/supabaseClient";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Avatar,
+  Stack,
+  CircularProgress,
+  Box,
+  Divider,
+  Button,
+} from "@mui/material";
 import Navbar from "../components/Navbar";
 
 export default function Profile() {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const getUser = async () => {
+    const checkSession = async () => {
       const { data } = await supabase.auth.getSession();
-      setUser(data.session?.user || null);
+      if (data?.session?.user) {
+        setUser(data.session.user);
+      }
+      setLoading(false);
     };
-    getUser();
+    checkSession();
   }, []);
 
-  async function handleLogout() {
-    await supabase.auth.signOut();
-    window.location.href = "/";
-  }
-
-  if (!user) {
+  if (loading)
     return (
-      <div style={{ textAlign: "center", marginTop: "100px" }}>
-        <Typography variant="h6" color="text.secondary">
-          Please log in to view your profile.
-        </Typography>
-      </div>
+      <Stack alignItems="center" mt={10}>
+        <CircularProgress />
+      </Stack>
     );
-  }
+
+  if (!user)
+    return (
+      <>
+        <Navbar />
+        <Typography align="center" mt={10} variant="h6" color="error">
+          ⚠️ No user found <br />
+          <span style={{ fontSize: "0.9rem", color: "#666" }}>
+            Please login again to see your profile.
+          </span>
+        </Typography>
+      </>
+    );
 
   return (
     <>
       <Navbar />
-      <div
-        style={{
+      <Box
+        sx={{
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height: "85vh",
-          background: "linear-gradient(135deg, #f3e8ff, #e0f2fe)",
+          minHeight: "80vh",
+          background:
+            "linear-gradient(135deg, #f9fafb 0%, #eef2ff 100%)",
+          p: 2,
         }}
       >
         <Card
           sx={{
-            width: 400,
+            width: "100%",
+            maxWidth: 420,
             borderRadius: 4,
-            boxShadow: "0 8px 25px rgba(0,0,0,0.1)",
-            p: 3,
-            background: "white",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
+            p: 2,
+            background: "#ffffff",
           }}
         >
           <CardContent>
-            <Stack spacing={2} alignItems="center" textAlign="center">
+            <Stack alignItems="center" spacing={2}>
               <Avatar
                 sx={{
+                  bgcolor: "#4f46e5",
                   width: 80,
                   height: 80,
-                  bgcolor: "#7c3aed",
                   fontSize: "2rem",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
                 }}
               >
-                {user.email.charAt(0).toUpperCase()}
+                {user.email[0].toUpperCase()}
               </Avatar>
 
-              <Typography variant="h5" fontWeight={700}>
-                {user.user_metadata?.full_name || "User"}
+              <Typography
+                variant="h5"
+                fontWeight={700}
+                sx={{ color: "#1e293b" }}
+              >
+                {user.email}
               </Typography>
 
-              <Typography color="text.secondary">{user.email}</Typography>
+              <Divider sx={{ width: "100%", my: 1.5 }} />
 
-              <Typography variant="body2" sx={{ mt: 1 }}>
-                Joined on:{" "}
-                <b>{new Date(user.created_at || Date.now()).toDateString()}</b>
+              <Typography
+                sx={{
+                  fontSize: "0.9rem",
+                  color: "#475569",
+                  textAlign: "center",
+                }}
+              >
+                <strong>ID:</strong> {user.id.slice(0, 10)}... <br />
+                <strong>Joined:</strong>{" "}
+                {new Date(user.created_at || Date.now()).toLocaleDateString(
+                  "en-GB",
+                  { day: "2-digit", month: "short", year: "numeric" }
+                )}
               </Typography>
+
+              <Divider sx={{ width: "100%", my: 1.5 }} />
 
               <Button
                 variant="contained"
-                color="error"
-                sx={{ mt: 2 }}
-                onClick={handleLogout}
+                color="primary"
+                sx={{
+                  borderRadius: 3,
+                  px: 4,
+                  textTransform: "none",
+                  fontWeight: 600,
+                }}
+                onClick={async () => {
+                  await supabase.auth.signOut();
+                  window.location.href = "/login";
+                }}
               >
                 Logout
               </Button>
             </Stack>
           </CardContent>
         </Card>
-      </div>
+      </Box>
     </>
   );
 }
