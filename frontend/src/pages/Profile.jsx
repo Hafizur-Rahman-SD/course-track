@@ -1,79 +1,91 @@
 import React, { useEffect, useState } from "react";
+import { Typography, Card, CardContent, Stack, Avatar, Button } from "@mui/material";
 import { supabase } from "../lib/supabaseClient";
-import {
-  Card,
-  CardContent,
-  Typography,
-  Avatar,
-  Stack,
-  CircularProgress,
-} from "@mui/material";
 import Navbar from "../components/Navbar";
 
 export default function Profile() {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const checkSession = async () => {
+    const getUser = async () => {
       const { data } = await supabase.auth.getSession();
-      if (data?.session?.user) {
-        setUser(data.session.user);
-      }
-      setLoading(false);
+      setUser(data.session?.user || null);
     };
-    checkSession();
+    getUser();
   }, []);
 
-  if (loading)
-    return (
-      <Stack alignItems="center" mt={10}>
-        <CircularProgress />
-      </Stack>
-    );
+  async function handleLogout() {
+    await supabase.auth.signOut();
+    window.location.href = "/";
+  }
 
-  if (!user)
+  if (!user) {
     return (
-      <>
-        <Navbar />
-        <Typography align="center" mt={10} variant="h6" color="error">
-          No user found 😞<br />
-          <span style={{ fontSize: "0.9rem", color: "#666" }}>
-            Please login again to see your profile.
-          </span>
+      <div style={{ textAlign: "center", marginTop: "100px" }}>
+        <Typography variant="h6" color="text.secondary">
+          Please log in to view your profile.
         </Typography>
-      </>
+      </div>
     );
+  }
 
   return (
     <>
       <Navbar />
-      <Card className="profile-card">
-        <CardContent>
-          <Stack alignItems="center" spacing={2}>
-            <Avatar className="profile-avatar">
-              {user.email[0].toUpperCase()}
-            </Avatar>
-            <Typography variant="h6" className="profile-email">
-              {user.email}
-            </Typography>
-            <Typography className="profile-meta">
-              ID: {user.id.slice(0, 10)}...
-            </Typography>
-            <Typography className="profile-meta">
-              Joined:{" "}
-              {new Date(user.created_at || Date.now()).toLocaleDateString(
-                "en-GB",
-                {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                }
-              )}
-            </Typography>
-          </Stack>
-        </CardContent>
-      </Card>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "85vh",
+          background: "linear-gradient(135deg, #f3e8ff, #e0f2fe)",
+        }}
+      >
+        <Card
+          sx={{
+            width: 400,
+            borderRadius: 4,
+            boxShadow: "0 8px 25px rgba(0,0,0,0.1)",
+            p: 3,
+            background: "white",
+          }}
+        >
+          <CardContent>
+            <Stack spacing={2} alignItems="center" textAlign="center">
+              <Avatar
+                sx={{
+                  width: 80,
+                  height: 80,
+                  bgcolor: "#7c3aed",
+                  fontSize: "2rem",
+                }}
+              >
+                {user.email.charAt(0).toUpperCase()}
+              </Avatar>
+
+              <Typography variant="h5" fontWeight={700}>
+                {user.user_metadata?.full_name || "User"}
+              </Typography>
+
+              <Typography color="text.secondary">{user.email}</Typography>
+
+              <Typography variant="body2" sx={{ mt: 1 }}>
+                Joined on:{" "}
+                <b>{new Date(user.created_at || Date.now()).toDateString()}</b>
+              </Typography>
+
+              <Button
+                variant="contained"
+                color="error"
+                sx={{ mt: 2 }}
+                onClick={handleLogout}
+              >
+                Logout
+              </Button>
+            </Stack>
+          </CardContent>
+        </Card>
+      </div>
     </>
   );
 }
