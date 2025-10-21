@@ -6,73 +6,90 @@ import Navbar from "../components/Navbar";
 
 export default function Home() {
   return (
-    <div className="home-wrap">
+    <div className="home-wrapper">
       <Navbar />
 
       {/* Hero Section */}
-      <section className="hero-section">
-        <div className="hero-content">
-          <h1 className="hero-title">
-            Track every course <br /> in one place ✨
+      <section className="home-hero">
+        <div className="hero-left">
+          <h1>
+            Welcome to <span>CourseTrack</span> 🎓
           </h1>
-          <p className="hero-text">
-            Save your progress, add certificates, and never lose track of what you’ve learned.
-            <br />
-            <span className="highlight">
-              For better experience, please create an account first.
-            </span>
+          <p>
+            Your all-in-one personal learning manager — track your courses,
+            monitor progress, and stay consistent with your goals.
           </p>
 
           <div className="hero-buttons">
             <Button
               variant="contained"
-              className="hero-btn primary"
               component={Link}
               to="/signup"
+              className="btn-main"
             >
               Get Started
             </Button>
             <Button
               variant="outlined"
-              className="hero-btn secondary"
               component={Link}
               to="/dashboard"
+              className="btn-outline"
             >
               Live Demo
             </Button>
           </div>
         </div>
 
-        <div className="hero-illustration">
+        <div className="hero-right">
           <img
-            src="https://cdn3d.iconscout.com/3d/premium/thumb/online-course-3d-illustration-download-in-png-blend-fbx-gltf-file-formats--study-student-learning-education-pack-illustrations-4992832.png"
-            alt="Course illustration"
+            src="https://cdni.iconscout.com/illustration/premium/thumb/elearning-dashboard-illustration-download-in-svg-png-gif-file-formats--online-courses-classroom-student-education-pack-people-illustrations-4289119.png"
+            alt="CourseTrack Illustration"
           />
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="features-section">
+      <section className="home-features">
         <h2>Why Choose CourseTrack?</h2>
-        <div className="features-grid">
+        <div className="features-container">
           <div className="feature-card">
-            <h3>🎯 Stay Organized</h3>
-            <p>All your courses, notes, and certificates in one dashboard.</p>
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/4221/4221429.png"
+              alt="Track Progress"
+            />
+            <h3>Track Progress</h3>
+            <p>
+              Keep track of your learning journey with an elegant, intuitive
+              dashboard that grows with you.
+            </p>
           </div>
           <div className="feature-card">
-            <h3>🧠 Learn Smart</h3>
-            <p>Visualize your progress and set learning goals easily.</p>
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/4775/4775390.png"
+              alt="Organize Data"
+            />
+            <h3>Organize Effortlessly</h3>
+            <p>
+              Store all your course links, notes, and certificates neatly in one
+              place — accessible anytime.
+            </p>
           </div>
           <div className="feature-card">
-            <h3>☁️ Access Anywhere</h3>
-            <p>Multi-device sync lets you continue learning on the go.</p>
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/3221/3221897.png"
+              alt="Grow Skills"
+            />
+            <h3>Grow Consistently</h3>
+            <p>
+              Visualize your improvement and make learning a part of your daily
+              routine effortlessly.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="main-footer">
-        <p>© 2025 CourseTrack — All Rights Reserved.</p>
+      <footer className="home-footer">
+        <p>© 2025 CourseTrack — Built to empower your growth 💜</p>
       </footer>
     </div>
   );
