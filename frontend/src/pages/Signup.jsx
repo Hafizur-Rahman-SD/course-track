@@ -46,9 +46,7 @@ export default function Signup() {
         <div className="brand">Course Tracking</div>
         <nav>
           <Link to="/">Home</Link>
-          <a href="#about">About Us</a>
-          <a href="#contact">Contact</a>
-          <Link className="active" to="/signup">Sign Up</Link>
+          
         </nav>
       </header>
 

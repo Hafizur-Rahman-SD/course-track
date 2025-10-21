@@ -38,12 +38,7 @@ export default function Login() {
       {/* Top navbar (Home, About, Contact, Log In) */}
       <header className="auth-nav">
         <div className="brand">Course Tracking</div>
-        <nav>
-          <Link to="/">Home</Link>
-          <a href="#about">About Us</a>
-          <a href="#contact">Contact</a>
-          <Link className="active" to="/login">Log In</Link>
-        </nav>
+        
       </header>
 
       <div className="auth-card">
