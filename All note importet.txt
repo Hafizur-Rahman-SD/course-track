@@ -2,3 +2,7 @@
 database pass course-track ph_dwW4nJ28UyFV
 
 npm start forrun server frontend 
+
+
+
+https://www.canva.com/templates/EAGYoe-0y3c/ login sineup 

@@ -1,103 +1,119 @@
-import * as React from "react";
-import { useState } from "react";
-import { supabase } from "../lib/supabaseClient";
-import {
-  Card,
-  CardContent,
-  TextField,
-  Button,
-  Typography,
-  Stack,
-  Alert,
-  Snackbar,
-} from "@mui/material";
+import React, { useState } from "react";
+import { TextField, Button, Checkbox, FormControlLabel } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import GoogleIcon from "@mui/icons-material/Google";
-import EmailIcon from "@mui/icons-material/Email";
+import { supabase } from "../lib/supabaseClient";
+import "../styles/AuthPage.css";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [notice, setNotice] = useState("");
-  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const [form, setForm] = useState({ email: "", password: "", remember: true });
+  const [loading, setLoading] = useState(false);
 
   async function handleLogin(e) {
     e.preventDefault();
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      setNotice(error.message);
-      setOpen(true);
-    } else if (data.session) {
-      setNotice("✅ Login successful!");
-      setOpen(true);
-      setTimeout(() => navigate("/dashboard"), 1500);
-    }
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({
+      email: form.email,
+      password: form.password,
+    });
+    setLoading(false);
+    if (error) return alert(error.message);
+    navigate("/dashboard");
   }
 
-  async function handleGoogleLogin() {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo: "http://localhost:3000/dashboard" },
-    });
-    if (error) {
-      setNotice(error.message);
-      setOpen(true);
-    }
+  async function signInWithGoogle() {
+    await supabase.auth.signInWithOAuth({ provider: "google" });
   }
 
-  async function handleForgotPassword() {
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: "http://localhost:3000/reset-password",
-    });
-    if (error) {
-      setNotice(error.message);
-    } else {
-      setNotice("📩 Password reset link sent to your email.");
-    }
-    setOpen(true);
+  async function handleForgot() {
+    if (!form.email) return alert("Enter your email first.");
+    const { error } = await supabase.auth.resetPasswordForEmail(form.email);
+    if (error) alert(error.message);
+    else alert("Password reset email sent.");
   }
 
   return (
-    <Card sx={{ maxWidth: 400, mx: "auto", mt: 6, p: 2 }}>
-      <CardContent>
-        <Typography variant="h5" fontWeight={700} mb={2}>
-          Login to your account
-        </Typography>
+    <div className="auth-wrap">
+      {/* Top navbar (Home, About, Contact, Log In) */}
+      <header className="auth-nav">
+        <div className="brand">Wardiere</div>
+        <nav>
+          <Link to="/">Home</Link>
+          <a href="#about">About Us</a>
+          <a href="#contact">Contact</a>
+          <Link className="active" to="/login">Log In</Link>
+        </nav>
+      </header>
 
-        {notice && <Alert severity={notice.startsWith("✅") ? "success" : "info"}>{notice}</Alert>}
+      <div className="auth-card">
+        <div className="auth-left">
+          <h2 className="auth-title">Log in</h2>
 
-        <form onSubmit={handleLogin}>
-          <Stack spacing={2}>
-            <TextField label="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-            <TextField label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-
-            <Button type="submit" variant="contained">Login</Button>
-
-            <Button
-              onClick={handleGoogleLogin}
-              startIcon={<GoogleIcon />}
+          <form className="auth-form" onSubmit={handleLogin}>
+            <TextField
+              label="Email Address"
+              type="email"
               variant="outlined"
-            >
-              Continue with Google
-            </Button>
+              size="medium"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              className="auth-input"
+            />
+            <TextField
+              label="Password"
+              type="password"
+              variant="outlined"
+              size="medium"
+              value={form.password}
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
+              className="auth-input"
+            />
+
+            <div className="auth-util">
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    size="small"
+                    checked={form.remember}
+                    onChange={(e) =>
+                      setForm({ ...form, remember: e.target.checked })
+                    }
+                  />
+                }
+                label="Remember me"
+              />
+              <button type="button" className="linkish" onClick={handleForgot}>
+                Forgot Password?
+              </button>
+            </div>
 
             <Button
-              startIcon={<EmailIcon />}
-              color="secondary"
-              onClick={handleForgotPassword}
+              className="primary-btn"
+              type="submit"
+              variant="contained"
+              disabled={loading}
             >
-              Forgot Password?
+              {loading ? "Signing in..." : "Log in"}
             </Button>
 
-            <Typography variant="body2">
-              Don't have an account? <Link to="/signup">Sign up</Link>
-            </Typography>
-          </Stack>
-        </form>
+            <button
+              type="button"
+              className="google-btn"
+              onClick={signInWithGoogle}
+            >
+              <GoogleIcon className="gicon" />
+              Continue with Google
+            </button>
 
-        <Snackbar open={open} autoHideDuration={4000} onClose={() => setOpen(false)} message={notice} />
-      </CardContent>
-    </Card>
+            <div className="auth-alt">
+              or <Link to="/signup">Sign up</Link>
+            </div>
+          </form>
+        </div>
+
+        <div className="auth-right" aria-hidden="true" />
+      </div>
+    </div>
   );
 }

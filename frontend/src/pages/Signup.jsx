@@ -1,81 +1,128 @@
 import React, { useState } from "react";
-import { TextField, Button, Typography, Box, Stack } from "@mui/material";
-import { supabase } from "../lib/supabaseClient";
-import { useNavigate, Link } from "react-router-dom";
+import { TextField, Button } from "@mui/material";
+import { Link, useNavigate } from "react-router-dom";
 import GoogleIcon from "@mui/icons-material/Google";
-import "../styles/Auth.css";
+import { supabase } from "../lib/supabaseClient";
+import "../styles/AuthPage.css";
 
 export default function Signup() {
-  const [formData, setFormData] = useState({ name: "", email: "", password: "" });
   const navigate = useNavigate();
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirm: "",
+  });
+  const [loading, setLoading] = useState(false);
 
   async function handleSignup(e) {
     e.preventDefault();
+    if (!form.name || !form.email || !form.password) {
+      return alert("Please fill all required fields.");
+    }
+    if (form.password !== form.confirm) {
+      return alert("Passwords do not match.");
+    }
+    setLoading(true);
     const { error } = await supabase.auth.signUp({
-      email: formData.email,
-      password: formData.password,
-      options: { data: { name: formData.name } },
+      email: form.email,
+      password: form.password,
+      options: { data: { name: form.name } },
     });
-    if (error) alert(error.message);
-    else alert("Signup successful! Please verify your email.");
+    setLoading(false);
+    if (error) return alert(error.message);
+    alert("Signup successful! Please verify your email and then login.");
+    navigate("/login");
   }
 
-  async function handleGoogleLogin() {
+  async function signInWithGoogle() {
     await supabase.auth.signInWithOAuth({ provider: "google" });
   }
 
   return (
-    <Box className="auth-container">
-      <Box className="left-panel">
-        <Typography variant="h4" color="white" fontWeight={700}>
-          Welcome Back!
-        </Typography>
-        <Typography color="white" sx={{ mt: 1, mb: 3 }}>
-          Please login with your personal info
-        </Typography>
-        <Button component={Link} to="/login" variant="outlined" color="inherit">
-          SIGN IN
-        </Button>
-      </Box>
+    <div className="auth-wrap">
+      {/* Top navbar (Home, About, Contact, Sign Up) */}
+      <header className="auth-nav">
+        <div className="brand">Course Tracking</div>
+        <nav>
+          <Link to="/">Home</Link>
+          <a href="#about">About Us</a>
+          <a href="#contact">Contact</a>
+          <Link className="active" to="/signup">Sign Up</Link>
+        </nav>
+      </header>
 
-      <Box className="right-panel">
-        <Typography variant="h5" fontWeight={700} sx={{ mb: 2 }}>
-          Sign Up
-        </Typography>
+      {/* Main card */}
+      <div className="auth-card">
+        <div className="auth-left">
+          <h2 className="auth-title">Sign up</h2>
 
-        <Stack spacing={2} sx={{ width: "80%", maxWidth: "350px" }}>
-          <TextField
-            label="Name"
-            variant="outlined"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          />
-          <TextField
-            label="Email"
-            variant="outlined"
-            value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          />
-          <TextField
-            label="Password"
-            type="password"
-            variant="outlined"
-            value={formData.password}
-            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-          />
-          <Button variant="contained" onClick={handleSignup}>
-            SIGN UP
-          </Button>
+          <form className="auth-form" onSubmit={handleSignup}>
+            <TextField
+              label="Full Name"
+              variant="outlined"
+              size="medium"
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              className="auth-input"
+            />
+            <TextField
+              label="Email Address"
+              type="email"
+              variant="outlined"
+              size="medium"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              className="auth-input"
+            />
+            <div className="auth-row">
+              <TextField
+                label="Password"
+                type="password"
+                variant="outlined"
+                size="medium"
+                value={form.password}
+                onChange={(e) => setForm({ ...form, password: e.target.value })}
+                className="auth-input"
+              />
+              <TextField
+                label="Confirm Password"
+                type="password"
+                variant="outlined"
+                size="medium"
+                value={form.confirm}
+                onChange={(e) => setForm({ ...form, confirm: e.target.value })}
+                className="auth-input"
+              />
+            </div>
 
-          <Button
-            variant="outlined"
-            startIcon={<GoogleIcon />}
-            onClick={handleGoogleLogin}
-          >
-            Continue with Google
-          </Button>
-        </Stack>
-      </Box>
-    </Box>
+            <Button
+              className="primary-btn"
+              type="submit"
+              variant="contained"
+              disabled={loading}
+            >
+              {loading ? "Creating..." : "Create Account"}
+            </Button>
+
+            <button
+              type="button"
+              className="google-btn"
+              onClick={signInWithGoogle}
+            >
+              <GoogleIcon className="gicon" />
+              Continue with Google
+            </button>
+
+            <div className="auth-alt">
+              or <Link to="/login">Log in</Link>
+            </div>
+          </form>
+        </div>
+
+        {/* Right decorative panel */}
+        <div className="auth-right" aria-hidden="true" />
+      </div>
+    </div>
   );
 }
