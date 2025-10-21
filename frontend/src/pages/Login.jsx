@@ -37,7 +37,7 @@ export default function Login() {
     <div className="auth-wrap">
       {/* Top navbar (Home, About, Contact, Log In) */}
       <header className="auth-nav">
-        <div className="brand">Wardiere</div>
+        <div className="brand">Course Tracking</div>
         <nav>
           <Link to="/">Home</Link>
           <a href="#about">About Us</a>
