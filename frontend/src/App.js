@@ -51,6 +51,13 @@ export default function App() {
           />
         </div>
       </section>
+{/* ⚠️ Animated Demo Warning */}
+<div className="demo-warning">
+  ⚠️ For a better experience, please{" "}
+  <a href="/login" className="demo-link">Login</a> or{" "}
+  <a href="/signup" className="demo-link">Sign up</a> to track your learning progress.
+</div>
+
 
       {/* ✅ Features Section */}
       <section className="home-features">
