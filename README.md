@@ -73,7 +73,8 @@ Run the App Locally
 
 npm start
 
-Then visit 👉 http://localhost:3000 ```
+Then visit 👉 http://localhost:3000
+```
 
 
 🧠 Developer Notes
@@ -103,9 +104,9 @@ Notifications for deadlines & progress
 Hafizur Rahman
 📧 hafizurrahman5004@gmail.com
 
-🔗 GitHub Profile
+ <a href="https://github.com/Hafizur-Rahman-SD"><b>🔗 GitHub Profile</b></a> •
+  <a href="https://course-track.vercel.app"><b>🌐 Live Demo</b></a> 
 
-🌐 Live App
 
 
 <p align="center"> ⭐ If you like this project, please consider giving it a star! <br> Made with ❤️ using React & Supabase </p>
