@@ -73,7 +73,7 @@ Run the App Locally
 
 npm start
 
-Then visit 👉 http://localhost:3000
+Then visit 👉 http://localhost:3000 ```
 
 
 🧠 Developer Notes
