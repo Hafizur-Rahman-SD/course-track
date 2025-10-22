@@ -38,6 +38,10 @@ export default function Login() {
       {/* Top navbar (Home, About, Contact, Log In) */}
       <header className="auth-nav">
         <div className="brand">Course Tracking</div>
+        <nav>
+          <Link to="/">Home</Link>
+          
+        </nav>
 
       </header>
 
