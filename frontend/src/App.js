@@ -45,10 +45,7 @@ export default function App() {
         </div>
 
         <div className="hero-right">
-          <img
-            src="https://cdni.iconscout.com/illustration/premium/thumb/elearning-dashboard-illustration-download-in-svg-png-gif-file-formats--online-courses-classroom-student-education-pack-people-illustrations-4289119.png"
-            alt="CourseTrack Illustration"
-          />
+          
         </div>
       </section>
 {/* ⚠️ Animated Demo Warning */}
